@@ -5,7 +5,7 @@ from pyquery import PyQuery as pq
 import random
 
 #%%
-def get_problem_list(difficulty):
+def get_problem_list(problems: dict, difficulty: int):
     difficulty = str(difficulty)
     problems[difficulty] = set()
     headers = {
@@ -21,19 +21,15 @@ def get_problem_list(difficulty):
 
 #%% save to problems
 # len(problems["3"])
-get_problem_list(3)
-get_problem_list(4)
+problems = dict()
+get_problem_list(problems, 3)
+get_problem_list(problems, 4)
 
 #%% selenium
 from selenium import webdriver
-import pymongo
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
-# browser = webdriver.Chrome()
-# browser = webdriver.PhantomJS(service_args=SERVICE_ARGS)
 
 chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.managed_default_content_settings.images": 2}
@@ -43,12 +39,7 @@ browser = webdriver.Chrome(chrome_options=chrome_options)
 
 wait = WebDriverWait(browser, 10)
 
-# client = pymongo.MongoClient(MONGO_URL)
-# db = client[MONGO_DB]
-
-problem_details = dict()
-
-def index_page(page: str, difficulty: int):
+def index_page(problem_details: dict, page: str, difficulty: int):
     """
     抓取索引页
     :param page: 页码
@@ -77,8 +68,10 @@ def get_problem_details_with_difficulty(difficulty: int):
 # 单独处理错误
 # index_page("P2759")
 # index_page("P2947")
-get_problem_details_with_difficulty(3)
-get_problem_details_with_difficulty(4)
+
+problem_details = dict()
+get_problem_details_with_difficulty(problem_details, 3)
+get_problem_details_with_difficulty(problem_details, 4)
 
 #%% parse_number_with_unit
 def parse_number_with_unit(s: str) -> float:
@@ -141,4 +134,3 @@ with open(problems_details_path, 'wb') as f:
 problems_details_list = "problems_detail_list"
 with open(problems_details_list, 'wb') as f:
   pickle.dump(problem_details, f)
-
